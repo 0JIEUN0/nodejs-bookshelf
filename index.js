@@ -17,7 +17,7 @@ const { User } = require('./models/User');
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', function(req, res) {
-  res.send('hello world');
+  res.send('hello world!');
 });
 
 app.post('/register', async (req, res) => {
