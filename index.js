@@ -43,4 +43,35 @@ app.post('/register', async (req, res) => {
   }
 })
 
+app.post('/login', async (req, res) => {
+  try {
+  // find user by email
+  const userInfo = await User.findOne({ email: req.body.email })
+  if (!userInfo) { // already registerd
+    return res.status(409).json({ // conflict
+      loginSuccess: false,
+      message: `User [${req.body.email}] was not registered.`
+    })
+  }
+
+  // check password
+  const isMatch = await userInfo.comparePassword(req.body.password)
+  if(!isMatch)
+    return res.status(404).json({
+      loginSuccess: false,
+      message: `User email or password was wrong.`
+    })
+  
+  // generate token
+  const token = await userInfo.generateToken();
+  res.status(200).json({
+    loginSuccess: true,
+    token: token
+  })
+
+  } catch (err) {
+    return res.status(400).json({ success: false, err })
+  }
+})
+
 app.listen(port, () => console.log(`Example app listening on port ${port}`))
