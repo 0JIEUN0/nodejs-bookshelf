@@ -4,6 +4,7 @@ const express = require('express');
 const app = express();
 const port = 5000
 const bodyParser = require('body-parser')
+const { auth } = require('./middleware/auth');
 
 app.use(bodyParser.urlencoded({extended: true})); // application/x-www-form-urlencoded
 app.use(bodyParser.json()); // application/json
@@ -39,7 +40,7 @@ app.post('/register', async (req, res) => {
       success: true
     })
   } catch (err) {
-    return res.status(400).json({ success: false, err })
+    return res.status(400).json({ success: false, message: err.message })
   }
 })
 
@@ -70,8 +71,18 @@ app.post('/login', async (req, res) => {
   })
 
   } catch (err) {
-    return res.status(400).json({ success: false, err })
+    return res.status(400).json({ success: false, message: err.message })
   }
+})
+
+app.get('/auth', auth, (req, res) => {
+  // Authentication is True
+  res.status(200).json({
+    isAuth: true,
+    id: req.user._id,
+    isAdmin: req.user.role === 0 ? false: true,
+    email: req.user.email,
+  })
 })
 
 app.listen(port, () => console.log(`Example app listening on port ${port}`))

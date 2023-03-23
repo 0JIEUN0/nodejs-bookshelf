@@ -52,6 +52,11 @@ userSchema.pre('save', function( next ){ // mongoose func
     }
 })
 
+userSchema.statics.findByToken = function(token) {
+    const userId = jwt.verify(token, jwtSecretToken)
+    return User.findOne({ "_id": userId, "token": token })
+}
+
 userSchema.methods.comparePassword = function(plainPassword) {
     return bcrypt.compare(plainPassword, this.password);
 }
