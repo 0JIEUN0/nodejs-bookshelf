@@ -21,18 +21,26 @@ app.get('/', function(req, res) {
 });
 
 app.post('/register', async (req, res) => {
-    // get information from client
-    const user = new User(req.body) // using body-parser
-    try {
-      // TODO check duplication/invalid value
-      const result = await user.save() // mongoDB function
-      return res.status(200).json({
-        success: true
-      })
-    } catch (err) {
-      return res.json({ success: false, err })
-    }
-})
+  // get information from client
+  const user = new User(req.body) // using body-parser
 
+  try {
+    // check duplication by email
+    const userInfo = await User.findOne({ email: req.body.email })
+    if (userInfo) { // already registerd
+      return res.status(409).json({ // conflict
+        loginSuccess: false,
+        message: `User email [${req.body.email}] is already registered.`
+      })
+    }
+
+    const result = await user.save() // mongoDB function
+    return res.status(200).json({
+      success: true
+    })
+  } catch (err) {
+    return res.status(400).json({ success: false, err })
+  }
+})
 
 app.listen(port, () => console.log(`Example app listening on port ${port}`))
