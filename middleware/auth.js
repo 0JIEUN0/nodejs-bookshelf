@@ -1,8 +1,8 @@
 const { User } = require('../models/User');
 
 let auth = async (req, res, next) => {
-    const token = req.body.token;
     try {
+        const token = req.cookies.x_access_token;
         const userInfo = await User.findByToken(token);
         console.log(userInfo)
         if (!userInfo) return res.status(404).json({ isAuth: false })

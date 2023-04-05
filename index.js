@@ -4,10 +4,12 @@ const express = require('express');
 const app = express();
 const port = 5000
 const bodyParser = require('body-parser')
+const cookieParser = require('cookie-parser');
 const { auth } = require('./middleware/auth');
 
 app.use(bodyParser.urlencoded({extended: true})); // application/x-www-form-urlencoded
 app.use(bodyParser.json()); // application/json
+app.use(cookieParser());
 
 const mongoose = require('mongoose')
 mongoose.connect(process.env.MONGODB_CONNECT, {
@@ -30,7 +32,7 @@ app.post('/register', async (req, res) => {
     const userInfo = await User.findOne({ email: req.body.email })
     if (userInfo) { // already registerd
       return res.status(409).json({ // conflict
-        loginSuccess: false,
+        success: false,
         message: `User email [${req.body.email}] is already registered.`
       })
     }
@@ -65,10 +67,11 @@ app.post('/login', async (req, res) => {
   
   // generate token
   const token = await userInfo.generateToken();
-  res.status(200).json({
-    loginSuccess: true,
-    token: token
-  })
+  res.cookie('x_access_token', token, { httpOnly: true })
+    .status(200).json({
+      loginSuccess: true,
+      token: token
+    })
 
   } catch (err) {
     return res.status(400).json({ success: false, message: err.message })
