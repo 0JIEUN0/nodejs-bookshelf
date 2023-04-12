@@ -1,4 +1,4 @@
-const { User } = require('../models/User');
+import { User } from '../models/User.js';
 
 let auth = async (req, res, next) => {
     try {
@@ -14,4 +14,4 @@ let auth = async (req, res, next) => {
     }
 }
 
-module.exports = { auth };
+export { auth };

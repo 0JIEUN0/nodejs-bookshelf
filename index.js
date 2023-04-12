@@ -1,22 +1,23 @@
-require("dotenv").config();
+import dotenv from 'dotenv';
+dotenv.config();
 
-const express = require('express');
+import express from 'express';
 const app = express();
 const port = 5000
-const bodyParser = require('body-parser')
-const cookieParser = require('cookie-parser');
-const { auth } = require('./middleware/auth');
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import { auth } from './middleware/auth.js';
 
 app.use(bodyParser.urlencoded({extended: true})); // application/x-www-form-urlencoded
 app.use(bodyParser.json()); // application/json
 app.use(cookieParser());
 
-const mongoose = require('mongoose')
+import mongoose from 'mongoose';
 mongoose.connect(process.env.MONGODB_CONNECT, {
 }).then(() => console.log('MongoDB Connected...'))
 .catch(err => console.log(err))
 
-const { User } = require('./models/User');
+import { User } from './models/User.js';
 
 // respond with "hello world" when a GET request is made to the homepage
 app.get('/', function(req, res) {
