@@ -1,4 +1,5 @@
 import { User } from "../models/User.js";
+import ShelfService from "./shelf.js";
 
 export default {
     registerUser: async (registerDto) => {
@@ -16,6 +17,9 @@ export default {
                 message: `User email [${registerDto.email}] is already registered.`
             }
         }
+
+        // add default bookeshelf
+        ShelfService.addNewShelf(user._id, { name: "basic" });
 
         await user.save() // mongoDB function
         return {}
