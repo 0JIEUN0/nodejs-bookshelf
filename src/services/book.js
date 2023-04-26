@@ -14,7 +14,7 @@ export default {
     addNewBook: async (userId, shelfId, bookDto) => {
         const shelf = await findShelf(userId, shelfId);
         if (bookDto.title == undefined) throw { status: 400, message: "Title must be provided." }
-        if (shelf.books.length > 5) throw {status: 400, message: 'Shelf can only have five books.'};
+        if (shelf.books.length >= 5) throw {status: 400, message: 'Shelf can only have five books.'};
 
         const book = new Book(bookDto);
         shelf.books.push(book);
@@ -24,7 +24,6 @@ export default {
     },
     updateBook: async (userId, shelfId, bookId, content) => {
         const shelf = await findShelf(userId, shelfId);
-        console.log(shelf.books)
         const book = shelf.books.find((book) => book._id.toString() == bookId);
         if (!book) throw {status: 404, message: `There is no book ${bookId} in ${shelfId}`};
         book.content = content;

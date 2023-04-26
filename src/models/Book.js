@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 
 const bookSchema = mongoose.Schema({
-    shelfId: { // TODO id of shelf
-        type: String,
-        // required: true,
-    },
     title: { // title of book
+        type: String,
+        trim: true,
+        maxlength: 100,
+    },
+    author: { // author of book
         type: String,
         trim: true,
         maxlength: 100,

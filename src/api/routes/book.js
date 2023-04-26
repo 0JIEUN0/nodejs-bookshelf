@@ -31,11 +31,11 @@ router.put('/', middlewares.auth, async (req, res) => {
     }
 })
 
-router.delete('/', middlewares.auth, async (req, res) => {
+router.delete('/:shelfId/:bookId', middlewares.auth, async (req, res) => {
     try {
         const userId = req.user._id;
-        const shelfId = req.body.shelfId;
-        const bookID = req.body.bookId;
+        const shelfId = req.params.shelfId;
+        const bookID = req.params.bookId;
         const result = await BookService.deleteBook(userId, shelfId, bookID);
         return res.status(200).json({ success: true, ...result})
     } catch (err) {
